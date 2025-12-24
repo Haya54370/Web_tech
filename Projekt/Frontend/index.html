@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booking System</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-light border-bottom">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">Booking System</a>
+
+      <div class="ms-auto d-flex gap-2 align-items-center">
+        <a class="btn btn-outline-primary" href="login.html" id="loginLink">Login</a>
+        <a class="btn btn-primary" href="register.html" id="registerLink">Register</a>
+
+        <a class="btn btn-dark d-none" href="admin.html" id="adminLink">Admin</a>
+
+        <button class="btn btn-outline-danger d-none" id="logoutBtn" type="button">
+          Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <header class="py-5">
+    <div class="container">
+      <div class="p-4 p-md-5 bg-light rounded-4 border text-center">
+        <h1 class="fw-bold mb-4">Booking System</h1>
+
+        <div class="d-flex justify-content-center flex-wrap gap-3">
+          <a class="btn btn-success btn-lg" href="booking.html">Book Appointment</a>
+          <a class="btn btn-secondary btn-lg" href="dashboard.html">My Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const userId = localStorage.getItem("userId");
+    const role = (localStorage.getItem("role") || "").toLowerCase();
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginLink = document.getElementById("loginLink");
+    const registerLink = document.getElementById("registerLink");
+    const adminLink = document.getElementById("adminLink");
+
+    // If logged in
+    if (userId) {
+      logoutBtn.classList.remove("d-none");
+      loginLink.classList.add("d-none");
+      registerLink.classList.add("d-none");
+
+      // Admin shortcut
+      if (role === "admin") {
+        adminLink.classList.remove("d-none");
+      }
+    }
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("role");
+      alert("Logged out");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
