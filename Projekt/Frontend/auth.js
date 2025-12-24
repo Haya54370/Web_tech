@@ -12,7 +12,7 @@ function getRole() {
 function requireLogin() {
   const userId = getUserId();
   if (!userId) {
-    window.location.href = "login.html";
+    window.location.href = "Login.html"; // ✅ FIX
   }
 }
 
@@ -22,7 +22,7 @@ function requireAdmin() {
   const role = getRole();
 
   if (!userId) {
-    window.location.href = "login.html";
+    window.location.href = "Login.html"; // ✅ FIX
     return;
   }
 
@@ -38,7 +38,7 @@ function redirectByRole() {
   const role = getRole();
 
   if (!userId) {
-    window.location.href = "login.html";
+    window.location.href = "Login.html"; // ✅ FIX
     return;
   }
 

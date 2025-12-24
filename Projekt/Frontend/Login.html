@@ -65,19 +65,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    /**
-     * ✅ API_BASE
-     * - إذا فتحت الصفحة من نفس الجهاز: بيستخدم localhost
-     * - إذا فتحتها من جهاز ثاني (عن طريق IP): بياخد نفس الـ IP تلقائيًا
-     *
-     * مثال:
-     * لو فتحت الصفحة على جهاز ثاني من:
-     * http://10.117.23.25:5500/login.html
-     * رح يصير API_BASE = http://10.117.23.25:3000
-     */
-    const API_BASE = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-      ? "http://localhost:3000"
-      : `http://${location.hostname}:3000`;
+    // ✅ Render backend URL (Online)
+    const API_BASE = "https://web-tech-5s0d.onrender.com";
 
     // Optional: clear old session when opening login page
     localStorage.removeItem("userId");
@@ -147,7 +136,7 @@
       } catch (err) {
         setMessage(
           "danger",
-          `Failed to connect to server (${API_BASE}). Make sure backend is running and firewall allows port 3000.`
+          `Failed to connect to server (${API_BASE}). Make sure backend is running.`
         );
         console.log(err);
       } finally {

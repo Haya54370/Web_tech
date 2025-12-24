@@ -84,10 +84,8 @@
   </script>
 
   <script>
-    // ✅ IMPORTANT:
-    // If another device wants to connect, change localhost to YOUR PC IP
-    // Example: const API_BASE = "http://192.168.1.50:3000";
-    const API_BASE = "http://localhost:3000";
+    // ✅ Render backend URL (Online)
+    const API_BASE = "https://web-tech-5s0d.onrender.com";
 
     // Optional: if admin opens this page, redirect to admin dashboard
     (function redirectAdmin() {
@@ -201,10 +199,7 @@
           document.getElementById("service").value = "";
         }
       } catch (err) {
-        setMessage(
-          "danger",
-          "Failed to connect to server. Make sure backend is running on port 3000."
-        );
+        setMessage("danger", "Failed to connect to server. Please try again.");
         console.log(err);
       } finally {
         setLoading(false);

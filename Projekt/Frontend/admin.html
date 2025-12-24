@@ -110,10 +110,8 @@
   <script src="auth.js"></script>
 
   <script>
-    // ✅ IMPORTANT:
-    // If another device wants to connect, change localhost to YOUR PC IP
-    // Example: const API_BASE = "http://192.168.1.50:3000";
-    const API_BASE = "http://localhost:3000";
+    // ✅ Render backend URL (Online)
+    const API_BASE = "https://web-tech-5s0d.onrender.com";
 
     requireAdmin();
 
@@ -261,7 +259,7 @@
           tbody.appendChild(tr);
         });
       } catch (err) {
-        setStatus("danger", "Failed to load. Make sure backend is running on port 3000.");
+        setStatus("danger", "Failed to load bookings. Please try again.");
         console.log(err);
       }
     }

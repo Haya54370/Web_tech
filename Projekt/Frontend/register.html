@@ -24,11 +24,7 @@
 
         <div class="mb-3">
           <label class="form-label">Name</label>
-          <input
-            id="name"
-            class="form-control"
-            placeholder="e.g. Ahmad"
-          />
+          <input id="name" class="form-control" placeholder="e.g. Ahmad" />
         </div>
 
         <div class="mb-3">
@@ -51,11 +47,7 @@
           />
         </div>
 
-        <button
-          type="button"
-          class="btn btn-primary w-100"
-          onclick="register()"
-        >
+        <button type="button" class="btn btn-primary w-100" onclick="register()">
           Register
         </button>
 
@@ -73,8 +65,10 @@
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Register Script -->
   <script>
+    // ✅ Render backend URL
+    const API_BASE = "https://web-tech-5s0d.onrender.com";
+
     async function register() {
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
@@ -91,7 +85,7 @@
       }
 
       try {
-        const res = await fetch("http://localhost:3000/api/register", {
+        const res = await fetch(`${API_BASE}/api/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password })
@@ -100,9 +94,7 @@
         const data = await res.json();
 
         msg.className =
-          (data.message || "").includes("✅")
-            ? "text-success"
-            : "text-danger";
+          (data.message || "").includes("✅") ? "text-success" : "text-danger";
 
         msg.innerText = data.message || "Done";
 
@@ -114,7 +106,7 @@
       } catch (err) {
         msg.className = "text-danger";
         msg.innerText =
-          "Failed to connect to server. Make sure backend is running on port 3000.";
+          "Failed to connect to server. Make sure backend is running.";
         console.log(err);
       }
     }
