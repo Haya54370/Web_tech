@@ -14,7 +14,7 @@ const app = express();
 ====================== */
 app.use(
   cors({
-    origin: "*", // ✅ يسمح لأي جهاز على الشبكة
+    origin: "*",
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -245,12 +245,11 @@ app.delete("/api/admin/booking/:id", requireAdmin, async (req, res) => {
 });
 
 /* ======================
-   Start Server (LAN ready)
+   Start Server (Render + LAN ready)
+   ✅ Render يستخدم PORT ديناميكي
 ====================== */
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("✅ Server running on:");
-  console.log(`   http://localhost:${PORT}`);
-  console.log(`   http://127.0.0.1:${PORT}`);
-  console.log(`   http://<YOUR-PC-IP>:${PORT}  (for others on same Wi-Fi)`);
+  console.log("✅ Server running on port:", PORT);
 });
