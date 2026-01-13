@@ -9,21 +9,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-
 body{
   background:#f6f4fb;
   font-family:'Poppins',system-ui,-apple-system,"Segoe UI",Arial;
   color:#222;
 }
-
-/* NAVBAR */
 .navbar{
   background:white;
   box-shadow:0 6px 22px rgba(0,0,0,.06);
   padding:14px 0;
 }
-
-/* HERO */
 .hero{
   background:linear-gradient(135deg,#C74B9F,#8241C2);
   color:white;
@@ -31,26 +26,14 @@ body{
   text-align:center;
   border-radius:0 0 60px 60px;
 }
-
-.hero h1{
-  font-size:3.2rem;
-  font-weight:800;
-}
-
-.hero p{
-  opacity:.95;
-  font-size:1.2rem;
-}
-
-/* SECTION TITLE */
+.hero h1{font-size:3.2rem;font-weight:800;}
+.hero p{opacity:.95;font-size:1.2rem;}
 .section-title{
   text-align:center;
   font-weight:800;
   margin:80px 0 30px;
   font-size:2.1rem;
 }
-
-/* SOFT CARDS */
 .soft-card{
   background:white;
   border-radius:26px;
@@ -58,13 +41,10 @@ body{
   padding:30px;
   transition:.3s;
 }
-
 .soft-card:hover{
   transform:translateY(-4px);
   box-shadow:0 35px 85px rgba(0,0,0,.12);
 }
-
-/* STEP BADGE */
 .step-badge{
   background:#8241C2;
   padding:8px 20px;
@@ -72,8 +52,6 @@ body{
   color:white;
   font-weight:600;
 }
-
-/* BOOKING BOX */
 .booking-box{
   background:white;
   border-radius:30px;
@@ -82,13 +60,6 @@ body{
   max-width:980px;
   margin:auto;
 }
-
-.booking-box p{
-  font-size:14px;
-  opacity:.8;
-}
-
-/* BUTTON MAIN */
 .btn-main{
   background:#8241C2;
   color:white;
@@ -98,20 +69,13 @@ body{
   padding:14px;
   font-size:17px;
 }
-
-.btn-main:hover{
-  background:#6f33ac;
-}
-
-/* FOOTER */
+.btn-main:hover{background:#6f33ac;}
 footer{
   margin-top:120px;
   padding:50px 0;
   text-align:center;
   color:#777;
 }
-
-/* ICON STYLE */
 .icon{
   font-size:38px;
   margin-bottom:8px;
@@ -122,19 +86,18 @@ footer{
 
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar fixed-top">
   <div class="container">
     <a class="navbar-brand fw-bold" href="index.html">Booking System</a>
-
     <div class="d-flex gap-2">
       <a href="about.html" class="btn btn-outline-secondary">About</a>
-      <a href="faq.html" class="btn btn-outline-secondary">FAQ</a>
+      <a href="FAQ.html" class="btn btn-outline-secondary">FAQ</a>
       <a href="contact.html" class="btn btn-outline-secondary">Contact</a>
       <button id="logoutBtn" class="btn btn-outline-danger">Logout</button>
     </div>
   </div>
 </nav>
-
 
 <!-- HERO -->
 <section class="hero mt-5">
@@ -145,86 +108,6 @@ footer{
   </div>
 </section>
 
-
-<!-- STATS -->
-<section class="container mt-5">
-  <div class="row g-4 text-center">
-    <div class="col-md-4"><div class="soft-card fw-bold">40% fewer calls</div></div>
-    <div class="col-md-4"><div class="soft-card fw-bold">90% fewer missed appointments</div></div>
-    <div class="col-md-4"><div class="soft-card fw-bold">24/7 availability</div></div>
-  </div>
-</section>
-
-
-<!-- WHY -->
-<h2 class="section-title">Why choose our system?</h2>
-
-<section class="container">
-  <div class="row g-4 text-center">
-    <div class="col-md-3">
-      <div class="soft-card">
-        <div class="icon">⚡</div>
-        <h5>Fast Booking</h5>
-        <p>Book an appointment in seconds.</p>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="soft-card">
-        <div class="icon">🔒</div>
-        <h5>Secure System</h5>
-        <p>Your data is always protected.</p>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="soft-card">
-        <div class="icon">⏰</div>
-        <h5>24/7 Access</h5>
-        <p>No phone calls — ever.</p>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="soft-card">
-        <div class="icon">✔️</div>
-        <h5>Easy to Manage</h5>
-        <p>Edit or cancel anytime.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- HOW -->
-<h2 class="section-title">How it works</h2>
-
-<section class="container text-center">
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="soft-card">
-        <span class="step-badge">1</span>
-        <h6 class="mt-2">Create an account</h6>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="soft-card">
-        <span class="step-badge">2</span>
-        <h6 class="mt-2">Choose date & time</h6>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="soft-card">
-        <span class="step-badge">3</span>
-        <h6 class="mt-2">Confirm booking</h6>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- BOOKING -->
 <h2 class="section-title">Book an appointment</h2>
 
@@ -232,11 +115,9 @@ footer{
   <div id="msg"></div>
 
   <div class="booking-box">
-
     <p class="text-muted">Bookings allowed Monday–Friday, 09:00–17:00</p>
 
     <div class="row g-3">
-
       <div class="col-md-4">
         <label class="form-label">Date</label>
         <input id="date" type="date" class="form-control">
@@ -256,18 +137,21 @@ footer{
           <option value="Follow-up">Follow-up</option>
         </select>
       </div>
-
     </div>
 
-    <button id="bookBtn" class="btn btn-main w-100 mt-4" onclick="book()">
-      <span id="btnText">Confirm Booking</span>
-      <span id="btnSpin" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+    <button class="btn btn-main w-100 mt-4" onclick="book()">
+      Confirm Booking
     </button>
-
   </div>
 </section>
-
 
 <footer>
   © 2025 Appointment Booking System — HAWK Project
 </footer>
+
+<!-- 🔗 JS FILES -->
+<script src="auth.js"></script>
+<script src="booking.js"></script>
+
+</body>
+</html>
