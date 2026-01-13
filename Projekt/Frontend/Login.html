@@ -1,148 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - Booking System</title>
+<meta charset="UTF-8">
+<title>Login — Booking System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#b44fa7,#6f4ad9);
+  color:white;
+}
+
+/* NAVBAR */
+nav{
+  display:flex;
+  align-items:center;
+  padding:18px 55px;
+  font-weight:700;
+  letter-spacing:.4px;
+  font-size:21px;
+}
+
+/* MAIN LAYOUT */
+.page{
+  min-height:90vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 50px;
+}
+
+.container{
+  max-width:1250px;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+/* LEFT TEXT */
+.left{
+  flex:1.3;
+  padding-right:70px;
+}
+
+.left h1{
+  font-size:64px;
+  margin:0 0 10px;
+  font-weight:800;
+}
+
+.left p{
+  font-size:18px;
+  max-width:560px;
+  line-height:1.8;
+  opacity:.92;
+}
+
+/* LOGIN CARD */
+.login-box{
+  background:white;
+  color:#222;
+  border-radius:26px;
+  padding:45px;
+  width:100%;
+  max-width:440px;
+  box-shadow:0 40px 110px rgba(0,0,0,.25);
+  animation:fade .6s ease;
+}
+
+@keyframes fade{
+  from{opacity:0; transform:translateY(18px);}
+  to{opacity:1;}
+}
+
+.login-box h3{
+  margin:0;
+  font-weight:800;
+}
+
+.login-box p{
+  margin-top:6px;
+  color:#777;
+}
+
+/* INPUTS */
+.form-control{
+  width:100%;
+  padding:15px;
+  border-radius:14px;
+  border:1px solid #ddd;
+  font-size:15px;
+  margin-top:12px;
+}
+
+.form-control:focus{
+  outline:none;
+  border-color:#6f4ad9;
+  box-shadow:0 0 0 2px rgba(111,74,217,.28);
+}
+
+/* LOGIN BUTTON - SAME GRADIENT */
+.btn-main{
+  width:100%;
+  padding:14px;
+  border:none;
+  background:linear-gradient(135deg,#b44fa7,#6f4ad9);
+  color:white;
+  border-radius:16px;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+  margin-top:8px;
+  transition:.25s;
+}
+
+.btn-main:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px rgba(0,0,0,.18);
+}
+
+/* LINKS */
+small a{
+  color:#6f4ad9;
+  font-weight:700;
+  text-decoration:none;
+}
+
+/* ERROR TEXT */
+#msg{
+  margin-top:12px;
+  color:#d33;
+  font-size:14px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .container{
+    flex-direction:column;
+    text-align:center;
+  }
+  .left{
+    padding:0 0 35px 0;
+  }
+}
+</style>
 </head>
 
 <body>
-  <h1 class="text-center text-primary mt-5">Booking System</h1>
 
-  <div class="container py-4" style="max-width: 520px;">
-    <div class="card shadow-sm rounded-4">
-      <div class="card-body p-4">
-        <h3 class="fw-bold mb-3">Login</h3>
+<nav>
+  Booking System
+</nav>
 
-        <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input
-            id="email"
-            type="email"
-            class="form-control"
-            placeholder="ahmad@mail.com"
-          />
-        </div>
+<div class="page">
+  <div class="container">
 
-        <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input
-            id="password"
-            type="password"
-            class="form-control"
-            placeholder="••••••"
-          />
-        </div>
+    <!-- LEFT SIDE -->
+    <div class="left">
+      <h1>Welcome Back 👋</h1>
 
-        <button
-          id="loginBtn"
-          type="button"
-          class="btn btn-success w-100"
-          onclick="login()"
-        >
-          <span id="loginBtnText">Login</span>
-          <span
-            id="loginSpinner"
-            class="spinner-border spinner-border-sm ms-2 d-none"
-            role="status"
-            aria-hidden="true"
-          ></span>
-        </button>
-
-        <div id="msg" class="mt-3 mb-0"></div>
-
-        <hr />
-        <p class="mb-0">No account? <a href="register.html">Register</a></p>
-      </div>
+      <p>
+        Manage all your appointments in one secure and modern platform.
+        Sign in to access your personal dashboard and stay organized.
+      </p>
     </div>
+
+    <!-- LOGIN CARD -->
+    <div class="login-box">
+
+      <h3>Login</h3>
+      <p>Access your dashboard</p>
+
+      <input id="email" type="email" class="form-control" placeholder="you@email.com">
+
+      <input id="password" type="password" class="form-control" placeholder="••••••••">
+
+      <button class="btn-main" onclick="login()">Login</button>
+
+      <div style="margin-top:12px">
+        <small>No account?
+          <a href="register.html">Create one</a>
+        </small>
+      </div>
+
+      <div id="msg"></div>
+
+    </div>
+
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+async function login(){
 
-  <script>
-    // ✅ Render backend URL (Online)
-    const API_BASE = "https://web-tech-5s0d.onrender.com";
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value.trim();
 
-    // Optional: clear old session when opening login page
-    localStorage.removeItem("userId");
-    localStorage.removeItem("role");
+  if(!email || !password)
+    return document.getElementById("msg").innerText="Please fill all fields.";
 
-    function setMessage(type, text) {
-      const msg = document.getElementById("msg");
-      msg.innerHTML = `<div class="alert alert-${type} mb-0">${text}</div>`;
-    }
-
-    function setLoading(isLoading) {
-      const btn = document.getElementById("loginBtn");
-      const spinner = document.getElementById("loginSpinner");
-      btn.disabled = isLoading;
-      spinner.classList.toggle("d-none", !isLoading);
-    }
-
-    // ✅ Enter key support
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") login();
+  try{
+    const res=await fetch("https://web-tech-5s0d.onrender.com/api/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({email,password})
     });
 
-    async function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+    const data=await res.json();
 
-      document.getElementById("msg").innerHTML = "";
+    if(data.userId){
 
-      if (!email || !password) {
-        setMessage("danger", "Please fill all fields.");
-        return;
-      }
+      localStorage.setItem("userId",data.userId);
+      localStorage.setItem("role",data.role||"user");
 
-      setLoading(true);
-
-      try {
-        const res = await fetch(`${API_BASE}/api/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        // ✅ لو السيرفر رجع HTML/خطأ بدال JSON
-        let data = {};
-        try { data = await res.json(); }
-        catch { data = { message: "❌ Server response is not JSON" }; }
-
-        const ok = (data.message || "").includes("✅");
-
-        if (!ok || !data.userId) {
-          setMessage("danger", data.message || "Login failed");
-          return;
-        }
-
-        // Save session
-        localStorage.setItem("userId", data.userId);
-        localStorage.setItem("role", (data.role || "user").toLowerCase());
-
-        setMessage("success", data.message || "✅ Login successful");
-
-        // Redirect by role
-        const role = (data.role || "user").toLowerCase();
-        setTimeout(() => {
-          window.location.href = (role === "admin") ? "admin.html" : "booking.html";
-        }, 600);
-
-      } catch (err) {
-        setMessage(
-          "danger",
-          `Failed to connect to server (${API_BASE}). Make sure backend is running.`
-        );
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
+      location.href="booking.html";
     }
-  </script>
+    else document.getElementById("msg").innerText=data.message||"Login failed";
+  }
+  catch{
+    document.getElementById("msg").innerText="Server error.";
+  }
+}
+</script>
+
 </body>
 </html>

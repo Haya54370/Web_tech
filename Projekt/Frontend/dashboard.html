@@ -1,165 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard - Booking System</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dashboard - Booking System</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family:'Poppins',sans-serif;
+  background:#f6f4fb;
+}
+
+/* NAVBAR */
+.navbar{
+  background:white;
+  box-shadow:0 8px 25px rgba(0,0,0,.07);
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,#C74B9F,#8241C2);
+  color:white;
+  padding:70px 0;
+  text-align:center;
+  border-bottom-left-radius:35px;
+  border-bottom-right-radius:35px;
+  box-shadow:0 30px 80px rgba(0,0,0,.15);
+}
+
+/* INFO CARD */
+.info-box{
+  background:white;
+  border-radius:20px;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 15px 50px rgba(0,0,0,.08);
+  font-weight:600;
+}
+
+/* TABLE CARD */
+.table-card{
+  border-radius:20px;
+  box-shadow:0 25px 80px rgba(0,0,0,.09);
+  overflow:hidden;
+}
+
+/* BUTTON MAIN */
+.btn-main{
+  background:#8241C2;
+  color:white;
+  border-radius:12px;
+  font-weight:600;
+  border:none;
+}
+
+.btn-main:hover{
+  background:#6f33ac;
+}
+
+/* REVEAL ANIMATION */
+.reveal{
+  opacity:0;
+  transform:translateY(20px);
+  transition:.6s;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:none;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  color:#777;
+  margin-top:50px;
+  padding:25px;
+}
+</style>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg bg-light border-bottom">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">Booking System</a>
 
-      <div class="ms-auto d-flex gap-2">
-        <a class="btn btn-outline-success" href="booking.html">New Booking</a>
-        <button class="btn btn-outline-danger" type="button" onclick="logout()">
-          Logout
-        </button>
-      </div>
+<!-- NAVBAR -->
+<nav class="navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">Booking System</a>
+
+    <div class="d-flex gap-2">
+      <a href="about.html" class="btn btn-outline-secondary">About</a>
+      <a href="faq.html" class="btn btn-outline-secondary">FAQ</a>
+      <a href="contact.html" class="btn btn-outline-secondary">Contact</a>
+
+      <a href="booking.html" class="btn btn-main">New Booking</a>
+
+      <button class="btn btn-outline-danger" onclick="logout()">Logout</button>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <div class="container py-5" style="max-width: 900px;">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <h3 class="fw-bold m-0">My Bookings</h3>
-      <button class="btn btn-outline-secondary" type="button" onclick="loadBookings()">
-        Refresh
-      </button>
+<!-- HEADER -->
+<section class="header mt-5 reveal">
+  <div class="container">
+    <h2 class="fw-bold">My Bookings</h2>
+    <p>Your scheduled appointments — simple & secure.</p>
+  </div>
+</section>
+
+<div class="container mt-4" style="max-width:1000px;">
+
+  <div id="status" class="alert alert-info reveal">Loading bookings...</div>
+
+  <div class="row g-3 mb-4 text-center">
+    <div class="col-md-4 reveal">
+      <div class="info-box" id="countBox">0 Appointments</div>
     </div>
-
-    <div id="status" class="alert alert-info">Loading bookings...</div>
-
-    <div class="card shadow-sm rounded-4">
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-striped m-0 align-middle">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Service</th>
-                <th style="width: 140px;">Action</th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-      </div>
+    <div class="col-md-4 reveal">
+      <div class="info-box">24/7 Access</div>
+    </div>
+    <div class="col-md-4 reveal">
+      <div class="info-box">Secure & Private</div>
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="table-card bg-white reveal">
+    <div class="p-3 d-flex justify-content-between">
+      <h5 class="m-0 fw-bold">Your Appointments</h5>
+      <button class="btn btn-outline-secondary" onclick="loadBookings()">Refresh</button>
+    </div>
 
-  <!-- Auth protection -->
-  <script src="auth.js"></script>
-  <script>
-    requireLogin();
-  </script>
+    <div class="table-responsive">
+      <table class="table table-striped m-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Service</th>
+            <th style="width:130px;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
 
-  <script>
-    // ✅ Render backend URL (Online)
-    const API_BASE = "https://web-tech-5s0d.onrender.com";
+</div>
 
-    // Optional: if admin opens this page, redirect to admin dashboard
-    (function redirectAdmin() {
-      const role = (localStorage.getItem("role") || "user").toLowerCase();
-      if (role === "admin") {
-        window.location.href = "admin.html";
-      }
-    })();
+<footer>
+  © 2025 Booking System — HAWK Project
+</footer>
 
-    function setStatus(type, text) {
-      const status = document.getElementById("status");
-      status.className = `alert alert-${type}`;
-      status.innerText = text;
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="auth.js"></script>
+<script>
+requireLogin();
+
+const API_BASE = "https://web-tech-5s0d.onrender.com";
+
+function logout(){
+  localStorage.clear();
+  window.location.href="index.html";
+}
+
+function setStatus(type,text){
+  const el=document.getElementById("status");
+  el.className=`alert alert-${type}`;
+  el.innerText=text;
+}
+
+async function loadBookings(){
+
+  const userId=localStorage.getItem("userId");
+  const tbody=document.getElementById("tbody");
+  const countBox=document.getElementById("countBox");
+
+  tbody.innerHTML="";
+  setStatus("info","Loading bookings...");
+
+  try{
+    const res=await fetch(`${API_BASE}/api/my-bookings/${userId}`);
+    const data=await res.json();
+
+    if(!Array.isArray(data)||!data.length){
+      setStatus("warning","No bookings found.");
+      countBox.innerText="0 Appointments";
+      return;
     }
 
-    function logout() {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("role");
-      window.location.href = "index.html";
-    }
+    setStatus("success","Bookings loaded successfully.");
+    countBox.innerText=`${data.length} Appointments`;
 
-    async function loadBookings() {
-      const userId = localStorage.getItem("userId");
-      const tbody = document.getElementById("tbody");
+    data.forEach(b=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`
+        <td>${b.date||"-"}</td>
+        <td>${b.time||"-"}</td>
+        <td>${b.service||"-"}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteBooking('${b._id}')">Delete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
 
-      setStatus("info", "Loading bookings...");
-      tbody.innerHTML = "";
+  }catch(e){
+    setStatus("danger","Error loading bookings.");
+  }
+}
 
-      try {
-        const res = await fetch(`${API_BASE}/api/my-bookings/${encodeURIComponent(userId)}`);
-        const data = await res.json();
+async function deleteBooking(id){
 
-        if (!Array.isArray(data) || data.length === 0) {
-          setStatus("warning", "No bookings found.");
-          return;
-        }
+  const ok=confirm("Delete this booking?");
+  if(!ok) return;
 
-        setStatus("success", `Total bookings: ${data.length}`);
+  const userId=localStorage.getItem("userId");
 
-        data.forEach((b) => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${b.date || "-"}</td>
-            <td>${b.time || "-"}</td>
-            <td>${b.service || "-"}</td>
-            <td>
-              <button
-                class="btn btn-sm btn-outline-danger"
-                type="button"
-                onclick="deleteBooking('${b._id}', this)"
-              >
-                Delete
-              </button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        setStatus("danger", "Failed to load bookings. Please try again.");
-        console.log(err);
-      }
-    }
+  try{
+    const res=await fetch(`${API_BASE}/api/booking/${id}?userId=${userId}`,{method:"DELETE"});
+    const data=await res.json();
+    const success=(data.message||"").includes("✅");
+    setStatus(success?"success":"danger",data.message||"Failed");
+  }catch(e){
+    setStatus("danger","Server error.");
+  }
 
-    async function deleteBooking(id, btnEl) {
-      const userId = localStorage.getItem("userId");
-      const ok = confirm("Are you sure you want to delete this booking?");
-      if (!ok) return;
+  loadBookings();
+}
 
-      const oldText = btnEl.innerText;
-      btnEl.disabled = true;
-      btnEl.innerText = "Deleting...";
+/* Reveal Animation */
+const reveals=document.querySelectorAll(".reveal");
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add("active");
+  });
+},{threshold:.2});
+reveals.forEach(r=>obs.observe(r));
 
-      try {
-        const res = await fetch(
-          `${API_BASE}/api/booking/${encodeURIComponent(id)}?userId=${encodeURIComponent(userId)}`,
-          { method: "DELETE" }
-        );
+loadBookings();
+</script>
 
-        const data = await res.json();
-        const success = (data.message || "").includes("✅");
-
-        setStatus(success ? "success" : "danger", data.message || "Done");
-
-        loadBookings();
-      } catch (err) {
-        setStatus("danger", "Failed to delete booking. Please try again.");
-        console.log(err);
-      } finally {
-        btnEl.disabled = false;
-        btnEl.innerText = oldText;
-      }
-    }
-
-    loadBookings();
-  </script>
 </body>
 </html>
