@@ -1,270 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin Dashboard - Booking System</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin Dashboard - Booking System</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+  background:#f6f4fb;
+  font-family:'Poppins',system-ui,-apple-system,"Segoe UI",Arial;
+}
+.navbar{
+  background:white;
+  box-shadow:0 6px 22px rgba(0,0,0,.06);
+}
+.hero{
+  background:linear-gradient(135deg,#C74B9F,#8241C2);
+  color:white;
+  padding:110px 0 80px;
+  text-align:center;
+  border-radius:0 0 60px 60px;
+}
+.badge-pill{
+  background:#8241C2;
+  color:#fff;
+  border-radius:999px;
+  padding:8px 14px;
+  font-weight:600;
+}
+.soft-card{
+  background:white;
+  border-radius:26px;
+  box-shadow:0 20px 75px rgba(0,0,0,.07);
+}
+.table thead th{
+  background:rgba(130,65,194,.08);
+  font-weight:700;
+}
+.btn-main{
+  background:#8241C2;
+  color:#fff;
+  border:none;
+}
+.btn-main:hover{
+  background:#6f33ac;
+  color:#fff;
+}
+footer{
+  margin-top:90px;
+  padding:40px 0;
+  text-align:center;
+  color:#777;
+}
+</style>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg bg-light border-bottom">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">Booking System</a>
 
-      <div class="ms-auto d-flex gap-2">
-        <button class="btn btn-outline-secondary" type="button" onclick="loadAllBookings()">
-          Refresh
-        </button>
-        <button class="btn btn-outline-danger" type="button" onclick="logout()">
-          Logout
-        </button>
-      </div>
+<nav class="navbar fixed-top">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">Booking System</a>
+    <div class="ms-auto">
+      <button class="btn btn-outline-danger" onclick="logout()">Logout</button>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <div class="container py-5" style="max-width: 1100px;">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-      <div>
-        <h2 class="fw-bold mb-1">Admin Dashboard</h2>
-        <div class="text-muted">Search, filter, and manage all bookings.</div>
-      </div>
+<section class="hero mt-5">
+  <div class="container">
+    <div class="badge-pill mb-3">🛠️ Admin Panel</div>
+    <h1 class="fw-bold">Manage all appointments</h1>
+    <p class="mb-0">Accept or reject bookings, edit details, and leave notes.</p>
+  </div>
+</section>
 
-      <div class="d-flex flex-wrap gap-2">
-        <input
-          id="search"
-          class="form-control"
-          style="min-width: 260px;"
-          placeholder="Search name / email / service"
-        />
-        <input
-          id="filterDate"
-          type="date"
-          class="form-control"
-          style="max-width: 190px;"
-        />
-        <button class="btn btn-primary" type="button" onclick="applyFilters()">Apply</button>
-        <button class="btn btn-outline-secondary" type="button" onclick="clearFilters()">Clear</button>
-      </div>
+<div class="container" style="max-width:1150px;margin-top:-55px;">
+  <div class="soft-card p-4">
+
+    <div id="status" class="alert alert-info mb-3">
+      Loading all bookings...
     </div>
 
-    <div id="status" class="alert alert-info">Loading all bookings...</div>
-
-    <div class="card shadow-sm rounded-4">
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-striped m-0 align-middle">
-            <thead>
-              <tr>
-                <th style="min-width: 160px;">User</th>
-                <th style="min-width: 220px;">Email</th>
-                <th style="min-width: 130px;">Date</th>
-                <th style="min-width: 110px;">Time</th>
-                <th style="min-width: 160px;">Service</th>
-                <th style="min-width: 120px;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-        </div>
-      </div>
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th style="min-width:180px;">Note</th>
+            <th style="min-width:260px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Delete Confirm Modal -->
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content rounded-4">
-        <div class="modal-header">
-          <h5 class="modal-title fw-bold">Confirm Delete</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to delete this booking?
-          <div class="text-muted mt-2" id="deleteInfo"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
-            <span id="delBtnText">Delete</span>
-            <span
-              id="delSpinner"
-              class="spinner-border spinner-border-sm ms-2 d-none"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          </button>
-        </div>
+  <footer>
+    © 2025 Appointment Booking System — Admin Dashboard
+  </footer>
+</div>
+
+<!-- STATUS + NOTE MODAL (Accept/Reject) -->
+<div class="modal fade" id="statusModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Booking decision</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="text-muted mb-2">Write a note for the user (optional)</p>
+        <textarea
+          id="adminNote"
+          class="form-control"
+          rows="4"
+          placeholder="Example: Please bring the required documents..."
+        ></textarea>
+        <div class="text-muted small mt-2" id="decisionInfo"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="confirmDecision('accepted')">Accept</button>
+        <button class="btn btn-danger" onclick="confirmDecision('rejected')">Reject</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Edit Booking</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-  <!-- Auth -->
-  <script src="auth.js"></script>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Date</label>
+          <input id="editDate" type="date" class="form-control">
+        </div>
 
-  <script>
-    // ✅ Render backend URL (Online)
-    const API_BASE = "https://web-tech-5s0d.onrender.com";
+        <div class="mb-3">
+          <label class="form-label">Time</label>
+          <input id="editTime" type="time" class="form-control">
+        </div>
 
-    requireAdmin();
+        <div class="mb-2">
+          <label class="form-label">Service</label>
+          <input id="editService" class="form-control" placeholder="Service">
+        </div>
 
-    let pendingDeleteId = null;
-    let deleteModal = null;
+        <div class="text-muted small" id="editInfo"></div>
+      </div>
 
-    function logout() {
-      localStorage.removeItem("userId");
-      localStorage.removeItem("role");
-      window.location.href = "index.html";
-    }
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" id="saveEditBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-    function setStatus(type, text) {
-      const status = document.getElementById("status");
-      status.className = `alert alert-${type}`;
-      status.innerText = text;
-    }
+<!-- NOTE ONLY MODAL -->
+<div class="modal fade" id="noteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Add / Update Note</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-    function applyFilters() {
-      loadAllBookings();
-    }
+      <div class="modal-body">
+        <label class="form-label">Note</label>
+        <textarea id="noteText" class="form-control" rows="4" placeholder="Write note..."></textarea>
+        <div class="text-muted small mt-2" id="noteInfo"></div>
+      </div>
 
-    function clearFilters() {
-      document.getElementById("search").value = "";
-      document.getElementById("filterDate").value = "";
-      loadAllBookings();
-    }
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-success" id="saveNoteBtn">Save Note</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-    // Press Enter to search
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const active = document.activeElement?.id;
-        if (active === "search" || active === "filterDate") loadAllBookings();
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Confirm Delete</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Are you sure you want to delete this booking?
+        <div class="text-muted mt-2" id="deleteInfo"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="auth.js"></script>
+
+<script>
+const API_BASE = "https://web-tech-5s0d.onrender.com";
+requireAdmin();
+
+let selectedBookingId = null;
+let selectedBookingRow = null;   // ✅ row reference for instant UI update
+let statusModal = null;
+
+let editModal = null;
+let noteModal = null;
+let deleteModal = null;
+
+let pendingEditId = null;
+let pendingNoteId = null;
+let pendingDeleteId = null;
+
+function logout(){
+  localStorage.clear();
+  location.href="index.html";
+}
+
+function setStatus(type,msg){
+  const s=document.getElementById("status");
+  s.className=`alert alert-${type}`;
+  s.innerText=msg;
+}
+
+function statusBadgeClass(status){
+  if(status==="accepted") return "success";
+  if(status==="rejected") return "danger";
+  return "warning";
+}
+
+/* =======================
+   Decide (Accept/Reject)
+======================= */
+function openDecisionModal(b, tr){
+  selectedBookingId = b._id;
+  selectedBookingRow = tr; // ✅ save row
+  document.getElementById("adminNote").value = b.note || "";
+  document.getElementById("decisionInfo").innerText =
+    `${b.user?.name||"-"} | ${b.user?.email||"-"} | ${b.date||"-"} ${b.time||"-"} | ${b.service||"-"}`;
+
+  if(!statusModal){
+    statusModal = new bootstrap.Modal(document.getElementById("statusModal"));
+  }
+  statusModal.show();
+}
+
+async function confirmDecision(status){
+  const adminId = localStorage.getItem("userId");
+  const note = document.getElementById("adminNote").value;
+
+  try{
+    const res = await fetch(
+      `${API_BASE}/api/admin/booking/${encodeURIComponent(selectedBookingId)}/status?adminId=${encodeURIComponent(adminId)}`,
+      {
+        method:"PUT",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ status, note })
       }
+    );
+
+    const data = await res.json();
+
+    if((data.message || "").includes("✅")){
+      setStatus("success", data.message);
+
+      // ✅ Update UI instantly (no waiting)
+      if(selectedBookingRow){
+        const badgeTd = selectedBookingRow.querySelector("td:nth-child(6)");
+        const noteTd  = selectedBookingRow.querySelector("td:nth-child(7)");
+        const actionsTd = selectedBookingRow.querySelector("td:nth-child(8)");
+
+        const badgeClass = statusBadgeClass(status);
+        badgeTd.innerHTML = `<span class="badge bg-${badgeClass}">${status}</span>`;
+        noteTd.innerText = (note && String(note).trim()) ? note : "-";
+
+        // remove decide button after decision
+        const decideBtn = actionsTd.querySelector(".btn-main");
+        if(decideBtn) decideBtn.remove();
+      }
+
+      statusModal.hide();
+
+      // ✅ refresh to sync (optional but safe)
+      loadAllBookings();
+    }else{
+      setStatus("danger", data.message || "Failed");
+    }
+
+  }catch(err){
+    setStatus("danger","Server error");
+  }
+}
+
+/* =======================
+   Edit booking
+======================= */
+function openEditModal(b){
+  pendingEditId = b._id;
+
+  document.getElementById("editDate").value = b.date || "";
+  document.getElementById("editTime").value = b.time || "";
+  document.getElementById("editService").value = b.service || "";
+  document.getElementById("editInfo").innerText =
+    `${b.user?.name||"-"} | ${b.user?.email||"-"}`;
+
+  if(!editModal){
+    editModal = new bootstrap.Modal(document.getElementById("editModal"));
+  }
+  editModal.show();
+}
+
+async function saveEdit(){
+  const adminId = localStorage.getItem("userId");
+  if(!pendingEditId) return;
+
+  const date = document.getElementById("editDate").value;
+  const time = document.getElementById("editTime").value;
+  const service = document.getElementById("editService").value.trim();
+
+  if(!date || !time || !service){
+    return setStatus("warning","Please fill date, time, and service.");
+  }
+
+  try{
+    const res = await fetch(
+      `${API_BASE}/api/admin/booking/${encodeURIComponent(pendingEditId)}?adminId=${encodeURIComponent(adminId)}`,
+      {
+        method:"PUT",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ date, time, service })
+      }
+    );
+
+    const data = await res.json();
+
+    if((data.message||"").includes("✅")){
+      setStatus("success", data.message);
+      editModal.hide();
+      pendingEditId = null;
+      loadAllBookings();
+    }else{
+      setStatus("danger", data.message || "Failed");
+    }
+
+  }catch(e){
+    setStatus("danger","Server error while updating.");
+  }
+}
+document.getElementById("saveEditBtn").addEventListener("click", saveEdit);
+
+/* =======================
+   Note only
+======================= */
+function openNoteModal(b){
+  pendingNoteId = b._id;
+
+  document.getElementById("noteText").value = b.note || "";
+  document.getElementById("noteInfo").innerText =
+    `${b.user?.name||"-"} | ${b.user?.email||"-"}`;
+
+  if(!noteModal){
+    noteModal = new bootstrap.Modal(document.getElementById("noteModal"));
+  }
+  noteModal.show();
+}
+
+async function saveNote(){
+  const adminId = localStorage.getItem("userId");
+  if(!pendingNoteId) return;
+
+  const note = document.getElementById("noteText").value.trim();
+
+  try{
+    const res = await fetch(
+      `${API_BASE}/api/admin/booking/${encodeURIComponent(pendingNoteId)}/note?adminId=${encodeURIComponent(adminId)}`,
+      {
+        method:"PATCH",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ note })
+      }
+    );
+
+    const data = await res.json();
+
+    if((data.message||"").includes("✅")){
+      setStatus("success", data.message);
+      noteModal.hide();
+      pendingNoteId = null;
+      loadAllBookings();
+    }else{
+      setStatus("danger", data.message || "Failed");
+    }
+
+  }catch(e){
+    setStatus("danger","Server error while saving note.");
+  }
+}
+document.getElementById("saveNoteBtn").addEventListener("click", saveNote);
+
+/* =======================
+   Delete booking
+======================= */
+function openDeleteModal(b){
+  pendingDeleteId = b._id;
+  document.getElementById("deleteInfo").innerText =
+    `${b.user?.name||"-"} | ${b.user?.email||"-"} | ${b.date||"-"} ${b.time||"-"} | ${b.service||"-"}`;
+
+  if(!deleteModal){
+    deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+  }
+  deleteModal.show();
+}
+
+async function confirmDelete(){
+  const adminId = localStorage.getItem("userId");
+  if(!pendingDeleteId) return;
+
+  try{
+    const res = await fetch(
+      `${API_BASE}/api/admin/booking/${encodeURIComponent(pendingDeleteId)}?adminId=${encodeURIComponent(adminId)}`,
+      { method:"DELETE" }
+    );
+
+    const data = await res.json();
+
+    if((data.message||"").includes("✅")){
+      setStatus("success", data.message);
+      deleteModal.hide();
+      pendingDeleteId = null;
+      loadAllBookings();
+    }else{
+      setStatus("danger", data.message || "Failed");
+    }
+
+  }catch(e){
+    setStatus("danger","Server error while deleting.");
+  }
+}
+document.getElementById("confirmDeleteBtn").addEventListener("click", confirmDelete);
+
+/* =======================
+   Load bookings
+======================= */
+async function loadAllBookings(){
+  const tbody=document.getElementById("tbody");
+  tbody.innerHTML="";
+  setStatus("info","Loading all bookings...");
+
+  const adminId=localStorage.getItem("userId");
+
+  try{
+    const res=await fetch(`${API_BASE}/api/admin/bookings?adminId=${encodeURIComponent(adminId)}`);
+    const data=await res.json();
+
+    if(!Array.isArray(data)||data.length===0){
+      setStatus("warning","No bookings found.");
+      return;
+    }
+
+    setStatus("success",`Total bookings: ${data.length}`);
+
+    data.forEach(b=>{
+      const tr=document.createElement("tr");
+
+      const badgeClass = statusBadgeClass(b.status);
+      const noteText = (b.note && String(b.note).trim()) ? b.note : "-";
+
+      tr.innerHTML=`
+        <td>${b.user?.name||"-"}</td>
+        <td>${b.user?.email||"-"}</td>
+        <td>${b.date||"-"}</td>
+        <td>${b.time||"-"}</td>
+        <td>${b.service||"-"}</td>
+        <td>
+          <span class="badge bg-${badgeClass}">
+            ${b.status||"pending"}
+          </span>
+        </td>
+        <td>${noteText}</td>
+        <td></td>
+      `;
+
+      const actions=tr.querySelector("td:last-child");
+
+      if((b.status||"pending")==="pending"){
+        const decideBtn=document.createElement("button");
+        decideBtn.className="btn btn-sm btn-main me-2";
+        decideBtn.innerText="Decide";
+        decideBtn.onclick=()=>openDecisionModal(b, tr); // ✅ pass row
+        actions.appendChild(decideBtn);
+      }
+
+      const editBtn=document.createElement("button");
+      editBtn.className="btn btn-sm btn-outline-primary me-2";
+      editBtn.innerText="Edit";
+      editBtn.onclick=()=>openEditModal(b);
+      actions.appendChild(editBtn);
+
+      const noteBtn=document.createElement("button");
+      noteBtn.className="btn btn-sm btn-outline-success me-2";
+      noteBtn.innerText="Note";
+      noteBtn.onclick=()=>openNoteModal(b);
+      actions.appendChild(noteBtn);
+
+      const delBtn=document.createElement("button");
+      delBtn.className="btn btn-sm btn-outline-danger";
+      delBtn.innerText="Delete";
+      delBtn.onclick=()=>openDeleteModal(b);
+      actions.appendChild(delBtn);
+
+      tbody.appendChild(tr);
     });
 
-    function openDeleteModal(bookingId, infoText) {
-      pendingDeleteId = bookingId;
-      document.getElementById("deleteInfo").innerText = infoText || "";
+  }catch(err){
+    setStatus("danger","Failed to load bookings");
+  }
+}
 
-      if (!deleteModal) {
-        deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
-      }
-      deleteModal.show();
-    }
+loadAllBookings();
+</script>
 
-    function setDeleteLoading(isLoading) {
-      const btn = document.getElementById("confirmDeleteBtn");
-      const sp = document.getElementById("delSpinner");
-      btn.disabled = isLoading;
-      sp.classList.toggle("d-none", !isLoading);
-    }
-
-    async function confirmDelete() {
-      const adminId = localStorage.getItem("userId");
-      if (!pendingDeleteId) return;
-
-      setDeleteLoading(true);
-
-      try {
-        const res = await fetch(
-          `${API_BASE}/api/admin/booking/${encodeURIComponent(pendingDeleteId)}?adminId=${encodeURIComponent(adminId)}`,
-          { method: "DELETE" }
-        );
-
-        const data = await res.json();
-
-        if ((data.message || "").includes("✅")) {
-          setStatus("success", data.message);
-          if (deleteModal) deleteModal.hide();
-          pendingDeleteId = null;
-          loadAllBookings();
-        } else {
-          setStatus("danger", data.message || "Failed to delete booking.");
-        }
-      } catch (err) {
-        setStatus("danger", "Failed to delete. Make sure backend is running.");
-        console.log(err);
-      } finally {
-        setDeleteLoading(false);
-      }
-    }
-
-    document.getElementById("confirmDeleteBtn").addEventListener("click", confirmDelete);
-
-    async function loadAllBookings() {
-      const tbody = document.getElementById("tbody");
-      tbody.innerHTML = "";
-      setStatus("info", "Loading all bookings...");
-
-      const adminId = localStorage.getItem("userId");
-      const q = (document.getElementById("search").value || "").trim();
-      const date = (document.getElementById("filterDate").value || "").trim();
-
-      const params = new URLSearchParams();
-      params.set("adminId", adminId);
-      if (q) params.set("q", q);
-      if (date) params.set("date", date);
-
-      try {
-        const res = await fetch(`${API_BASE}/api/admin/bookings?${params.toString()}`);
-        const data = await res.json();
-
-        if (!Array.isArray(data)) {
-          setStatus("danger", data.message || "Failed to load bookings.");
-          return;
-        }
-
-        if (data.length === 0) {
-          setStatus("warning", "No bookings found.");
-          return;
-        }
-
-        setStatus("success", `Total bookings: ${data.length}`);
-
-        data.forEach((b) => {
-          const userName = b.user?.name || "-";
-          const userEmail = b.user?.email || "-";
-          const dateVal = b.date || "-";
-          const timeVal = b.time || "-";
-          const serviceVal = b.service || "-";
-
-          const tr = document.createElement("tr");
-
-          const delBtn = document.createElement("button");
-          delBtn.className = "btn btn-sm btn-outline-danger";
-          delBtn.type = "button";
-          delBtn.innerText = "Delete";
-
-          delBtn.addEventListener("click", () => {
-            const info = `${userName} | ${userEmail} | ${dateVal} ${timeVal} | ${serviceVal}`;
-            openDeleteModal(b._id, info);
-          });
-
-          tr.innerHTML = `
-            <td>${userName}</td>
-            <td>${userEmail}</td>
-            <td>${dateVal}</td>
-            <td>${timeVal}</td>
-            <td>${serviceVal}</td>
-            <td></td>
-          `;
-
-          tr.querySelector("td:last-child").appendChild(delBtn);
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        setStatus("danger", "Failed to load bookings. Please try again.");
-        console.log(err);
-      }
-    }
-
-    loadAllBookings();
-  </script>
 </body>
 </html>

@@ -44,6 +44,16 @@ function showMsg(message, ok = true) {
 }
 
 // =======================
+// Show "View my appointments" on page load
+// =======================
+document.addEventListener("DOMContentLoaded", () => {
+  const userId = getUserId();
+  if (userId) {
+    $("myBookingsBtn")?.classList.remove("d-none");
+  }
+});
+
+// =======================
 // Book Appointment
 // =======================
 async function book() {
@@ -78,9 +88,14 @@ async function book() {
 
     const data = await res.json();
 
-    // الباكند بيرجع message بكل الحالات
     const success = (data?.message || "").includes("✅");
     showMsg(data?.message || "تم", success);
+
+    // إبقاء الزر ظاهر كذلك بعد booking ناجح
+    if (success) {
+      $("myBookingsBtn")?.classList.remove("d-none");
+    }
+
   } catch (err) {
     console.error(err);
     showMsg("❌ فشل الاتصال بالسيرفر", false);

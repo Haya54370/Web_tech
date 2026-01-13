@@ -14,27 +14,18 @@ body{
   font-family:'Poppins',sans-serif;
   background:#f6f4fb;
 }
-
-/* Navbar */
-.navbar{
-  box-shadow:0 3px 15px rgba(0,0,0,.06);
-}
-
-/* Hero Section */
+.navbar{box-shadow:0 3px 15px rgba(0,0,0,.06);}
 .hero{
   background:linear-gradient(135deg,#C74B9F,#8241C2);
   color:white;
   padding:110px 0;
 }
-
-/* Card Style */
 .contact-card{
   background:white;
   border-radius:18px;
   box-shadow:0 15px 45px rgba(0,0,0,.1);
   padding:35px;
 }
-
 footer{
   background:#181A24;
   color:#ccc;
@@ -69,25 +60,32 @@ footer{
     <h4 class="fw-bold mb-3">Send us a message</h4>
     <p class="text-muted">Our support team will reply as soon as possible.</p>
 
+    <!-- message box -->
+    <div id="msg"></div>
+
     <div class="row g-3">
 
       <div class="col-md-6">
         <label class="form-label">Your Name</label>
-        <input class="form-control" placeholder="e.g. John Doe">
+        <input id="name" class="form-control" placeholder="e.g. John Doe">
       </div>
 
       <div class="col-md-6">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" placeholder="you@email.com">
+        <input id="email" type="email" class="form-control" placeholder="you@email.com">
       </div>
 
       <div class="col-12">
         <label class="form-label">Message</label>
-        <textarea class="form-control" rows="4" placeholder="Write your message here..."></textarea>
+        <textarea id="message" class="form-control" rows="4" placeholder="Write your message here..."></textarea>
       </div>
 
       <div class="col-12">
-        <button class="btn btn-primary w-100" style="background:#8241C2;border:none;">
+        <button
+          class="btn btn-primary w-100"
+          style="background:#8241C2;border:none;"
+          onclick="sendMessage()"
+        >
           Send Message
         </button>
       </div>
@@ -101,16 +99,41 @@ footer{
 </footer>
 
 <script>
-  const userId = localStorage.getItem("userId");
-  const logoutBtn = document.getElementById("logoutBtn");
+/* Logout logic */
+const userId = localStorage.getItem("userId");
+const logoutBtn = document.getElementById("logoutBtn");
+if (userId) logoutBtn.classList.remove("d-none");
 
-  if (userId) logoutBtn.classList.remove("d-none");
+logoutBtn?.addEventListener("click",()=>{
+  localStorage.clear();
+  window.location.href="index.html";
+});
 
-  logoutBtn.addEventListener("click",()=>{
-    localStorage.removeItem("userId");
-    localStorage.removeItem("role");
-    window.location.href="index.html";
-  });
+/* Send message (frontend only) */
+function sendMessage(){
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
+  const msgBox = document.getElementById("msg");
+
+  if(!name || !email || !message){
+    msgBox.innerHTML = `
+      <div class="alert alert-danger">
+        ❌ Please fill all fields.
+      </div>`;
+    return;
+  }
+
+  msgBox.innerHTML = `
+    <div class="alert alert-success">
+      ✅ Message sent successfully! We’ll contact you soon.
+    </div>`;
+
+  // clear form
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("message").value = "";
+}
 </script>
 
 </body>

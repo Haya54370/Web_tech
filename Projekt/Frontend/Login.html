@@ -179,7 +179,6 @@ small a{
       <p>Access your dashboard</p>
 
       <input id="email" type="email" class="form-control" placeholder="you@email.com">
-
       <input id="password" type="password" class="form-control" placeholder="••••••••">
 
       <button class="btn-main" onclick="login()">Login</button>
@@ -200,32 +199,41 @@ small a{
 <script>
 async function login(){
 
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  if(!email || !password)
-    return document.getElementById("msg").innerText="Please fill all fields.";
+  if(!email || !password){
+    document.getElementById("msg").innerText = "Please fill all fields.";
+    return;
+  }
 
   try{
-    const res=await fetch("https://web-tech-5s0d.onrender.com/api/login",{
+    const res = await fetch("https://web-tech-5s0d.onrender.com/api/login",{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({email,password})
+      body: JSON.stringify({ email, password })
     });
 
-    const data=await res.json();
+    const data = await res.json();
 
     if(data.userId){
 
-      localStorage.setItem("userId",data.userId);
-      localStorage.setItem("role",data.role||"user");
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("role", data.role || "user");
 
-      location.href="booking.html";
+      // ✅ Redirect حسب الدور
+      if ((data.role || "").toLowerCase() === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "booking.html";
+      }
+
+    } else {
+      document.getElementById("msg").innerText = data.message || "Login failed";
     }
-    else document.getElementById("msg").innerText=data.message||"Login failed";
   }
   catch{
-    document.getElementById("msg").innerText="Server error.";
+    document.getElementById("msg").innerText = "Server error.";
   }
 }
 </script>
