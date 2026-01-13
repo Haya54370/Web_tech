@@ -10,12 +10,12 @@ const Booking = require("./models/Booking");
 const app = express();
 
 /* ======================
-   CORS (LAN ready)
+   CORS
 ====================== */
 app.use(
   cors({
     origin: "*",
-    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -23,14 +23,14 @@ app.use(
 app.use(express.json());
 
 /* ======================
-   Test Route
+   Test
 ====================== */
 app.get("/", (req, res) => {
   res.send("Backend is working ✅");
 });
 
 /* ======================
-   Helpers
+   Admin middleware
 ====================== */
 async function requireAdmin(req, res, next) {
   try {
@@ -51,12 +51,11 @@ async function requireAdmin(req, res, next) {
 }
 
 /* ======================
-   Register (default role = user)
+   Register
 ====================== */
 app.post("/api/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
     if (!name || !email || !password) {
       return res.json({ message: "❌ Missing fields" });
     }
@@ -77,13 +76,13 @@ app.post("/api/register", async (req, res) => {
 
     await newUser.save();
     res.json({ message: "✅ User registered successfully" });
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Login (return role)
+   Login
 ====================== */
 app.post("/api/login", async (req, res) => {
   try {
@@ -98,158 +97,233 @@ app.post("/api/login", async (req, res) => {
     res.json({
       message: "✅ Login successful",
       userId: user._id,
-      role: user.role || "user",
+      role: user.role,
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Book Appointment
-   ✅ Working hours 09:00-17:00
-   ✅ No bookings on Saturday/Sunday
-   ✅ Prevent duplicates by date + time
+   Book appointment
 ====================== */
 app.post("/api/book", async (req, res) => {
   try {
     const { userId, date, time, service } = req.body;
-
     if (!userId || !date || !time || !service) {
       return res.json({ message: "❌ Missing fields" });
     }
 
-    const dayIndex = new Date(date + "T00:00:00").getDay();
-    if (dayIndex === 0 || dayIndex === 6) {
-      return res.json({ message: "❌ No bookings on weekends (Saturday/Sunday)." });
+    // ✅ تأكد إن المستخدم موجود
+    const userExists = await User.findById(userId);
+    if (!userExists) {
+      return res.json({ message: "❌ User not found" });
+    }
+
+    const day = new Date(date + "T00:00:00").getDay();
+    if (day === 0 || day === 6) {
+      return res.json({ message: "❌ No bookings on weekends" });
     }
 
     const [h, m] = time.split(":").map(Number);
     const minutes = h * 60 + m;
-    const start = 9 * 60;
-    const end = 17 * 60;
-
-    if (minutes < start || minutes > end) {
-      return res.json({ message: "❌ Working hours are 09:00 to 17:00." });
+    if (minutes < 540 || minutes > 1020) {
+      return res.json({ message: "❌ Working hours 09:00–17:00" });
     }
 
     const conflict = await Booking.findOne({ date, time });
     if (conflict) {
-      return res.json({
-        message: "❌ This time slot is already booked. Please choose another time.",
-      });
+      return res.json({ message: "❌ Time already booked" });
     }
 
-    const booking = new Booking({ userId, date, time, service });
-    await booking.save();
+    const booking = new Booking({
+      userId: String(userId), // ✅ ضمان string
+      date,
+      time,
+      service,
+      status: "pending",
+      note: "",
+    });
 
+    await booking.save();
     res.json({ message: "✅ Appointment booked successfully" });
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Get User Bookings
+   User bookings
 ====================== */
 app.get("/api/my-bookings/:userId", async (req, res) => {
   try {
-    const bookings = await Booking.find({ userId: req.params.userId }).sort({
+    const bookings = await Booking.find({ userId: String(req.params.userId) }).sort({
       date: 1,
       time: 1,
     });
+
     res.json(bookings);
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Delete Booking (user owns it)
+   User delete booking
 ====================== */
 app.delete("/api/booking/:id", async (req, res) => {
   try {
-    const bookingId = req.params.id;
-    const userId = req.query.userId;
+    const { userId } = req.query;
+    const booking = await Booking.findById(req.params.id);
 
-    if (!userId) return res.status(400).json({ message: "❌ Missing userId" });
-
-    const booking = await Booking.findById(bookingId);
-    if (!booking) return res.status(404).json({ message: "❌ Booking not found" });
-
-    if (booking.userId.toString() !== userId.toString()) {
-      return res.status(403).json({ message: "❌ Not allowed" });
+    if (!booking) return res.json({ message: "❌ Booking not found" });
+    if (booking.userId !== String(userId)) {
+      return res.json({ message: "❌ Not allowed" });
     }
 
-    await Booking.deleteOne({ _id: bookingId });
+    await Booking.deleteOne({ _id: booking._id });
     res.json({ message: "✅ Booking deleted" });
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Admin: Get ALL bookings + Search + Filter by date
+   Admin: get all bookings
 ====================== */
 app.get("/api/admin/bookings", requireAdmin, async (req, res) => {
   try {
-    const q = (req.query.q || "").trim();
-    const date = (req.query.date || "").trim();
+    const bookings = await Booking.find().sort({ date: 1, time: 1 });
 
-    const bookingFilter = {};
-    if (date) bookingFilter.date = date;
+    const userIds = [
+      ...new Set(
+        bookings
+          .map(b => String(b.userId))
+          .filter(Boolean)
+      )
+    ];
 
-    const bookings = await Booking.find(bookingFilter)
-      .sort({ date: 1, time: 1 })
-      .populate("userId", "name email role");
+    const users = await User.find(
+      { _id: { $in: userIds } },
+      "name email"
+    ).lean();
 
-    let mapped = bookings.map((b) => ({
-      _id: b._id,
-      date: b.date,
-      time: b.time,
-      service: b.service,
-      user: b.userId,
-    }));
+    const usersMap = new Map(users.map(u => [String(u._id), u]));
 
-    if (q) {
-      const qq = q.toLowerCase();
-      mapped = mapped.filter((b) => {
-        const name = (b.user?.name || "").toLowerCase();
-        const email = (b.user?.email || "").toLowerCase();
-        const service = (b.service || "").toLowerCase();
-        return name.includes(qq) || email.includes(qq) || service.includes(qq);
-      });
-    }
-
-    res.json(mapped);
-  } catch (err) {
+    res.json(
+      bookings.map(b => ({
+        _id: b._id,
+        date: b.date,
+        time: b.time,
+        service: b.service,
+        status: b.status,
+        note: b.note,
+        user: usersMap.get(String(b.userId)) || { name: "-", email: "-" },
+      }))
+    );
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Admin: Delete ANY booking
+   Admin: accept / reject + note
+====================== */
+app.put("/api/admin/booking/:id/status", requireAdmin, async (req, res) => {
+  try {
+    const { status, note } = req.body;
+
+    if (!["accepted", "rejected"].includes(status)) {
+      return res.json({ message: "❌ Invalid status" });
+    }
+
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.json({ message: "❌ Booking not found" });
+
+    booking.status = status;
+    booking.note = note || "";
+    await booking.save();
+
+    res.json({
+      message: "✅ Booking updated",
+      status: booking.status,
+      note: booking.note
+    });
+  } catch {
+    res.status(500).json({ message: "❌ Server error" });
+  }
+});
+
+/* ======================
+   Admin: edit booking
+====================== */
+app.put("/api/admin/booking/:id", requireAdmin, async (req, res) => {
+  try {
+    const { date, time, service } = req.body;
+
+    if (!date || !time || !service) {
+      return res.json({ message: "❌ Missing fields" });
+    }
+
+    const conflict = await Booking.findOne({
+      _id: { $ne: req.params.id },
+      date,
+      time,
+    });
+
+    if (conflict) {
+      return res.json({ message: "❌ Time already booked" });
+    }
+
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.json({ message: "❌ Booking not found" });
+
+    booking.date = date;
+    booking.time = time;
+    booking.service = service;
+    await booking.save();
+
+    res.json({ message: "✅ Booking edited successfully" });
+  } catch {
+    res.status(500).json({ message: "❌ Server error" });
+  }
+});
+
+/* ======================
+   Admin: update note only
+====================== */
+app.patch("/api/admin/booking/:id/note", requireAdmin, async (req, res) => {
+  try {
+    const { note } = req.body;
+
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.json({ message: "❌ Booking not found" });
+
+    booking.note = note || "";
+    await booking.save();
+
+    res.json({ message: "✅ Note saved" });
+  } catch {
+    res.status(500).json({ message: "❌ Server error" });
+  }
+});
+
+/* ======================
+   Admin delete booking
 ====================== */
 app.delete("/api/admin/booking/:id", requireAdmin, async (req, res) => {
   try {
-    const bookingId = req.params.id;
-
-    const booking = await Booking.findById(bookingId);
-    if (!booking) return res.status(404).json({ message: "❌ Booking not found" });
-
-    await Booking.deleteOne({ _id: bookingId });
+    await Booking.deleteOne({ _id: req.params.id });
     res.json({ message: "✅ Booking deleted (admin)" });
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: "❌ Server error" });
   }
 });
 
 /* ======================
-   Start Server (Render + LAN ready)
-   ✅ Render يستخدم PORT ديناميكي
+   Start server
 ====================== */
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("✅ Server running on port:", PORT);
+  console.log("✅ Server running on port", PORT);
 });
